@@ -198,6 +198,7 @@ class RulesEntityController extends EntityAPIControllerExportable {
     $query = parent::buildQuery($ids, $conditions, $revision_id);
     $query_conditions =& $query->conditions();
     foreach ($query_conditions as &$condition) {
+if (isset($condition['field'])) {
       // Support using 'tags' => array('tag1', 'tag2') as condition.
       if ($condition['field'] == 'base.tags') {
         $query->join('rules_tags', 'rt', 'base.id = rt.id');
@@ -208,6 +209,7 @@ class RulesEntityController extends EntityAPIControllerExportable {
         $query->join('rules_trigger', 'tr', "base.id = tr.id");
         $condition['field'] = 'tr.event';
       }
+}
     }
     return $query;
   }
