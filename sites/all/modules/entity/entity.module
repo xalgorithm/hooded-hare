@@ -715,8 +715,13 @@ function _entity_defaults_rebuild($entity_type) {
       // Keep original entities for hook_{entity_type}_defaults_rebuild()
       // implementations.
       $originals[$name] = $entity->original;
-
-      $entity->{$keys['status']} |= ENTITY_IN_CODE;
+ 
+      if (!isset($entity->{$keys['status']})) {
+        $entity->{$keys['status']} = ENTITY_IN_CODE;
+      }
+      else {
+        $entity->{$keys['status']} |= ENTITY_IN_CODE;
+      }
       $entity->is_rebuild = TRUE;
       entity_save($entity_type, $entity);
       unset($entity->is_rebuild);
