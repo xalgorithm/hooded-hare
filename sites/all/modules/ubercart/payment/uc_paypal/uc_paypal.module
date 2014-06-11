@@ -867,7 +867,7 @@ function uc_paypal_wps_form($form, &$form_state, $order) {
     'no_note' => 1,
     'no_shipping' => variable_get('uc_paypal_wps_no_shipping', 1),
     'return' => url('uc_paypal/wps/complete/' . $order->order_id, array('absolute' => TRUE)),
-    'rm' => 2,
+    'rm' => 1,
 
     // Transaction information.
     'currency_code' => variable_get('uc_paypal_wps_currency', 'USD'),
@@ -991,7 +991,7 @@ function uc_paypal_api_request($request, $server) {
   curl_setopt($ch, CURLOPT_POST, 1);
   curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
   curl_setopt($ch, CURLOPT_NOPROGRESS, 1);
   curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
   $response = curl_exec($ch);

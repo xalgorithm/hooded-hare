@@ -1007,7 +1007,7 @@ function uc_order_product_save($order_id, $product) {
       $product->weight_units = variable_get('uc_weight_unit', 'lb');
     }
     else {
-      $units = db_query("SELECT weight_units FROM {node} AS n JOIN {uc_products} AS p ON n.vid = p.vid WHERE n.nid = :nid", array(':nid' => $product->nid))->fetchField();
+      $units = db_query("SELECT weight_units FROM {node} n JOIN {uc_products} p ON n.vid = p.vid WHERE n.nid = :nid", array(':nid' => $product->nid))->fetchField();
       $product->weight_units = empty($units) ? variable_get('uc_weight_unit', 'lb') : $units;
     }
   }
@@ -2005,15 +2005,20 @@ function uc_order_actions($order, $icon_html = FALSE) {
   if (count($extra)) {
     $actions = array_merge($actions, $extra);
   }
+  drupal_alter('uc_order_actions', $actions, $order);
 
   if ($icon_html) {
     $output = '';
     foreach ($actions as $action) {
+      $action['classes'][] = 'uc-order-action';
+      if (empty($action['attributes'])) {
+        $action['attributes'] = array();
+      }
+      $action['attributes']['title'] = $action['title'];
+      $action['attributes']['class'] = implode(' ', $action['classes']);
+
       $output .= l($action['icon'], $action['url'], array(
-        'attributes' => array(
-          'class' => 'uc-order-action',
-          'title' => $action['title'],
-        ),
+        'attributes' => $action['attributes'],
         'html' => TRUE,
       ));
     }
@@ -2218,6 +2223,9 @@ function uc_order_action_set_status($order, $context = array()) {
   $update = uc_order_update_status($order->order_id, $context['status']);
 
   if ($update && $context['notify']) {
+    // Update order object, as uc_order_update_status() cannot.
+    $order->order_status = $context['status'];
+
     rules_invoke_event('uc_order_status_email_update', $order);
   }
 }

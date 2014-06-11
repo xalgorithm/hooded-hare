@@ -50,7 +50,7 @@ function uc_product_kit_form_uc_product_settings_form_alter(&$form, &$form_state
  */
 function uc_product_kit_form_node_delete_confirm_alter(&$form, &$form_state) {
   if (uc_product_is_product((integer)$form['nid']['#value'])) {
-    $kits = db_query("SELECT COUNT(k.nid) FROM {node} AS n JOIN {uc_product_kits} AS k ON n.vid = k.vid WHERE k.vid IN (SELECT DISTINCT vid FROM {uc_product_kits} WHERE product_id = :nid) GROUP BY k.nid HAVING COUNT(product_id) = 1", array(':nid' => $form['nid']['#value']))->fetchField();
+    $kits = db_query("SELECT COUNT(k.nid) FROM {node} n JOIN {uc_product_kits} k ON n.vid = k.vid WHERE k.vid IN (SELECT DISTINCT vid FROM {uc_product_kits} WHERE product_id = :nid) GROUP BY k.nid HAVING COUNT(product_id) = 1", array(':nid' => $form['nid']['#value']))->fetchField();
 
     if ($kits) {
       $description = $form['description']['#markup'];
@@ -142,7 +142,7 @@ function uc_product_kit_insert(&$node) {
   $obj->sell_price = 0;
   $obj->weight = 0;
   $obj->weight_units = variable_get('uc_weight_unit', 'lb');
-  $obj->default_qty = 0;
+  $obj->default_qty = $node->default_qty;
   $obj->ordering = $node->ordering;
   $obj->shippable = FALSE;
 
@@ -1050,7 +1050,7 @@ function uc_product_kit_uc_order_product_alter(&$product, $order) {
  * Implements hook_uc_cart_display().
  *
  * Displays either the kit as a whole, or each individual product based on the
- *       store configuration. Each product in the cart that was added by
+ * store configuration. Each product in the cart that was added by
  * uc_product_kit was also given a unique kit id in order to help prevent
  * collisions. The side effect is that identical product kits are listed
  * separately if added separately. The customer may still change the quantity
@@ -1162,18 +1162,6 @@ function uc_product_kit_uc_update_cart_item($nid, $data = array(), $qty, $cid = 
         uc_product_uc_update_cart_item($p_nid, $product->data, $qty * $kit->products[$p_nid]->qty, $cid);
       }
     }
-  }
-}
-
-/**
- * usort() callback.
- */
-function _uc_product_kit_sort_products($a, $b) {
-  if ($a->ordering == $b->ordering) {
-    return strcmp($a->title, $b->title);
-  }
-  else {
-    return ($a->ordering < $b->ordering) ? -1 : 1;
   }
 }
 

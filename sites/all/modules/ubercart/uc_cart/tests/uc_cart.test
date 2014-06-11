@@ -84,7 +84,8 @@ class UbercartCartCheckoutTestCase extends UbercartTestHelper {
     $item->data['updated'] = TRUE;
     uc_cart_update_item($item);
 
-    $item = reset(uc_cart_get_contents());
+    $items = uc_cart_get_contents();
+    $item = reset($items);
     $this->assertEqual($item->qty, $qty, 'Set cart item quantity is correct.');
     $this->assertTrue($item->data['updated'], 'Set cart item data is correct.');
 
@@ -106,8 +107,7 @@ class UbercartCartCheckoutTestCase extends UbercartTestHelper {
 
     // Empty the cart.
     uc_cart_add_item($this->product->nid);
-    // @TODO: default to the current cart
-    uc_cart_empty(uc_cart_get_id());
+    uc_cart_empty();
 
     $items = uc_cart_get_contents();
     $this->assertEqual($items, array(), 'Cart is emptied correctly.');
@@ -213,12 +213,14 @@ class UbercartCartCheckoutTestCase extends UbercartTestHelper {
     $this->drupalGet('cart');
     $this->assertText('There are no products in your shopping cart.');
 
-    // New account email is last but one.
-    $mail = array_pop(array_slice($this->drupalGetMails(), -2, 1));
+    // Test new account email.
+    $mail = $this->drupalGetMails(array('id' => 'user_register_no_approval_required'));
+    $mail = array_pop($mail);
     $this->assertTrue(strpos($mail['body'], $new_user->name) !== FALSE, 'Mail body contains username.');
 
-    // Invoice email is last.
-    $mail = array_pop(array_slice($this->drupalGetMails(), -1, 1));
+    // Test invoice email.
+    $mail = $this->drupalGetMails(array('subject' => 'Your Order at Ubercart'));
+    $mail = array_pop($mail);
     $this->assertTrue(strpos($mail['body'], $new_user->name) !== FALSE, 'Invoice body contains username.');
     $this->assertFalse(strpos($mail['body'], $new_user->pass_raw) !== FALSE, 'Mail body does not contain password.');
 
@@ -238,8 +240,9 @@ class UbercartCartCheckoutTestCase extends UbercartTestHelper {
     $this->checkout();
     $this->assertRaw('Your order is complete!');
 
-    // New account email is last but one.
-    $mail = array_pop(array_slice($this->drupalGetMails(), -2, 1));
+    // Test new account email.
+    $mail = $this->drupalGetMails(array('id' => 'user_register_no_approval_required'));
+    $mail = array_pop($mail);
     $new_user = new stdClass();
     $new_user->name = $mail['params']['account']->name;
     $new_user->pass_raw = $mail['params']['account']->password;
@@ -247,8 +250,9 @@ class UbercartCartCheckoutTestCase extends UbercartTestHelper {
     $this->assertTrue(!empty($new_user->pass_raw), 'New password is not empty.');
     $this->assertTrue(strpos($mail['body'], $new_user->name) !== FALSE, 'Mail body contains username.');
 
-    // Invoice email is last.
-    $mail = array_pop(array_slice($this->drupalGetMails(), -1, 1));
+    // Test invoice email.
+    $mail = $this->drupalGetMails(array('subject' => 'Your Order at Ubercart'));
+    $mail = array_pop($mail);
     $this->assertTrue(strpos($mail['body'], $new_user->name) !== FALSE, 'Invoice body contains username.');
     $this->assertTrue(strpos($mail['body'], $new_user->pass_raw) !== FALSE, 'Invoice body contains password.');
 
@@ -566,6 +570,25 @@ class UbercartCartSettingsTestCase extends UbercartTestHelper {
       t('Checkout')
     );
     $this->assertText('Enter your billing address and information here.');
+  }
+
+  function testEmptyCart() {
+    // Test that the feature is not enabled by default.
+    $this->drupalPost('node/' . $this->product->nid, array(), 'Add to cart');
+    $this->assertNoRaw('Empty cart');
+
+    // Test the admin settings itself.
+    $this->drupalLogin($this->adminUser);
+    $this->drupalGet('admin/store/settings/cart');
+    $this->assertField('uc_cart_empty_button', 'Empty cart button checkbox found.');
+    $this->drupalPost(NULL, array('uc_cart_empty_button' => TRUE), 'Save configuration');
+
+    // Test the feature itself.
+    $this->drupalGet('cart');
+    $this->drupalPost(NULL, array(), 'Empty cart');
+    $this->assertText('Are you sure you want to empty your shopping cart? ');
+    $this->drupalPost(NULL, array(), 'Confirm');
+    $this->assertText('There are no products in your shopping cart.');
   }
 
   function testContinueShopping() {
