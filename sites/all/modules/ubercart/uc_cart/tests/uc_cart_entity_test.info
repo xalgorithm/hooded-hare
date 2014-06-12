@@ -1,8 +1,7 @@
-name = 2Checkout
-description = Processes payments using 2Checkout.com.
-dependencies[] = uc_payment
-package = Ubercart - payment
+name = Cart item entity test module
 core = 7.x
+dependencies[] = uc_cart
+hidden = TRUE
 
 ; Information added by drupal.org packaging script on 2013-02-20
 version = "7.x-3.4"
