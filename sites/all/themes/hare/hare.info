@@ -1,7 +1,7 @@
 
 name = Hare
 description = A flexible, recolorable theme with many regions.
-package = Core
+package = Other
 version = VERSION
 core = 7.x
 
