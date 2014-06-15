@@ -7,10 +7,8 @@ core = 7.x
 
 base theme = bartik
 
-stylesheets[all][] = css/layout.css
-stylesheets[all][] = css/style.css
-stylesheets[all][] = css/colors.css
-stylesheets[print][] = css/print.css
+; load some (empty!) stylesheet to trigger stylesheet inheritance
+stylesheets[all][] = css/empty.css
 
 regions[header] = Header
 regions[help] = Help
