@@ -1,9 +1,11 @@
 name        = Zen
-description = Zen sub-themes are the ultimate starting themes for Drupal 7. Read the <a href="http://drupal.org/node/873778">online docs</a> or the included README-FIRST.txt on how to create a theme with Zen.
+description = Wulfy's Zen theme
 screenshot  = zen-internals/screenshot.png
 
 core        = 7.x
 engine      = phptemplate
+
+; base theme = zen0
 
 stylesheets[all][] = system.menus.css
 

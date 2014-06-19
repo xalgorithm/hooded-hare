@@ -160,10 +160,3 @@ function hare2_field__taxonomy_term_reference($variables) {
 
   return $output;
 }
-
-/* added from Wulfy's cd */
-function hare2_preprocess_page(&$variables) {
-  if (!empty($variables['node'])) {
-    $variables['theme_hook_suggestions'][] = 'node_' . $variables['node']->type;
-  }
-}
