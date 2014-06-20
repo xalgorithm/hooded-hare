@@ -1,5 +1,3 @@
-/* @override http://hare.sigurgata.org/sites/all/themes/zen/zen-internals/css/blocks.css?m6cquw */
-
 /**
  * @file
  * Block Styling
@@ -22,15 +20,7 @@
 .block.even { /* Zebra striping for each block in the region */
 }
 
-h2.block-title {
-  margin: 0;
-  padding: 0;
-  font-size: 1.3em;
-  line-height: 1.3em;
-}
-
-ul.menu  {
-  margin-top: 5px;
+h2.block-title { /* Block title */
 }
 
 #block-aggregator-category-1 { /* Block for the latest news items in the first category */

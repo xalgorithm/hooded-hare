@@ -1,5 +1,3 @@
-/* @override http://hare.sigurgata.org/sites/all/themes/zen/zen-internals/css/fields.css?m6cquw */
-
 /**
  * @file
  * Field Styling
@@ -102,28 +100,4 @@
 }
 
 .field-name-field-FIELDNAME { /* Underscores in field name are replaced with dashes. */
-}
-
-.node-product .field, .node-product .product-info {
-  clear: left;
-  width: 530px;
-}
-.node-product .field-name-body {
-  float: left;
-}
-.node-product .display-price {
-  width: auto;
-}
-.node-product .field-name-uc-product-image {
-  clear: right;
-  float: right;
-  width: auto;
-}
-.node-product .field-name-uc-product-image img {
-  max-width: 200px;
-}
-.node-product .field-name-uc-product-image .field-label,
-.node-product .list-price, .node-product .sell-price,
-.node-product .cost {
-  display: none;
 }
