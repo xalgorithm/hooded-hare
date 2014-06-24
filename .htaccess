@@ -141,3 +141,17 @@ DirectoryIndex index.php index.html index.htm
     </FilesMatch>
   </IfModule>
 </IfModule>
+
+# password protect development shop
+
+# AuthUserFile  /home/thhare/thehoodedhare.com/booth/.htpasswd
+# AuthGroupFile /home/thhare/thehoodedhare.com/booth/.htgroup
+# .ht* files in top dir or sub-dir ?
+AuthUserFile  /var/www/html/booth/.htpasswd
+AuthGroupFile /var/www/html/booth/.htgroup
+AuthName "enter admin name and password"
+AuthType Basic
+<Limit GET>
+    require group admins
+</Limit>
+
