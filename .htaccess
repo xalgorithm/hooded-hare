@@ -154,4 +154,3 @@ AuthType Basic
 <Limit GET>
     require group admins
 </Limit>
-
